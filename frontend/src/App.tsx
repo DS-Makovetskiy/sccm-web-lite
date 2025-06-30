@@ -10,6 +10,9 @@ function App() {
   const [ipSegment1, setIpSegment1] = useState('');
   const [ipSegment2, setIpSegment2] = useState('');
   const [darkMode, setDarkMode] = useState(false);
+  const [showSettings, setShowSettings] = useState(false);
+  const [dataSource, setDataSource] = useState('csv');
+  const [csvPath, setCsvPath] = useState('');
 
   const fetchComputers = () => {
     setLoading(true);
@@ -51,7 +54,7 @@ function App() {
 
   const handleValidatedInput = (setter: (v: string) => void) => (e: React.ChangeEvent<HTMLInputElement>) => {
     const val = e.target.value;
-    const valid = val.replace(/[^a-zA-Zа-яА-Я0-9\-_.]/g, '');
+    const valid = val.replace(/[^a-zA-Zа-яА-Я0-9\-_]/g, '');
     setter(valid);
   };
 
@@ -86,35 +89,84 @@ function App() {
           {loading && <span className="loading">Обновление...</span>}
         </div>
 
-        <div className="tableContainer">
-          <table className="table">
-            <thead className="thead">
-              <tr>
-                <th className="th">ФИО</th>
-                <th className="th">Имя ПК</th>
-                <th className="th">Действие</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filtered.map((c, i) => (
-                <tr key={i}>
-                  <td className="td">{c.fio}</td>
-                  <td className="td">{c.name}</td>
-                  <td className="td">
-                    <button onClick={() => connect(c.ip)}>Подключиться</button>
-                  </td>
+        {!showSettings && (
+          <div className="tableContainer">
+            <table className="table">
+              <thead className="thead">
+                <tr>
+                  <th className="th">ФИО</th>
+                  <th className="th">Имя ПК</th>
+                  <th className="th">Действие</th>
                 </tr>
-              ))}
-              {filtered.length === 0 && (
-                <tr><td colSpan="3" className="noResults">Ничего не найдено</td></tr>
-              )}
-            </tbody>
-          </table>
-        </div>
+              </thead>
+              <tbody>
+                {filtered.map((c, i) => (
+                  <tr key={i}>
+                    <td className="td">{c.fio}</td>
+                    <td className="td">{c.name}</td>
+                    <td className="td">
+                      <button onClick={() => connect(c.ip)}>Подключиться</button>
+                    </td>
+                  </tr>
+                ))}
+                {filtered.length === 0 && (
+                  <tr><td colSpan="3" className="noResults">Ничего не найдено</td></tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+        )}
+
+        {showSettings && (
+          <div className="settingsPanel">
+            <h2>Параметры</h2>
+            <div>
+              <label><strong>Источник данных:</strong></label>
+              <div>
+                <label>
+                  <input
+                    type="radio"
+                    name="source"
+                    value="csv"
+                    checked={dataSource === 'csv'}
+                    onChange={() => setDataSource('csv')}
+                  /> Из CSV файла
+                </label>
+                {dataSource === 'csv' && (
+                  <input
+                    type="text"
+                    placeholder="Путь к каталогу с CSV"
+                    value={csvPath}
+                    onChange={e => setCsvPath(e.target.value)}
+                    style={{ marginLeft: '10px' }}
+                  />
+                )}
+              </div>
+              <div>
+                <label>
+                  <input
+                    type="radio"
+                    name="source"
+                    value="ad"
+                    checked={dataSource === 'ad'}
+                    onChange={() => setDataSource('ad')}
+                  /> Из AD (выполнить PowerShell)
+                </label>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
 
       <div className="rightPane">
-        <div className="rightBlock"><h3>Блок кнопок и индикаторов</h3></div>
+        <div className="rightBlock">
+          <button
+            title="Параметры"
+            onClick={() => setShowSettings(!showSettings)}
+            style={{ width: '36px', height: '36px', fontSize: '20px', borderRadius: '6px', cursor: 'pointer' }}>
+            ⚙
+          </button>
+        </div>
 
         <div className="rightBlock">
           <h3>Быстрое подключение</h3>
