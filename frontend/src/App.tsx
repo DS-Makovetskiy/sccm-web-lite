@@ -39,7 +39,16 @@ function App() {
   );
 
   const connect = (target: string) => {
-    axios.post(`http://localhost:8000/connect/${target}`);
+    axios.get(`http://localhost:8000/launch`, {
+      params: { ip: target }
+    })
+    .then(() => {
+      console.log(`Подключение к ${target} запущено`);
+    })
+    .catch((err) => {
+      console.error(`Ошибка при подключении к ${target}:`, err);
+      alert(`Ошибка: ${err?.response?.data?.detail || 'не удалось подключиться'}`);
+    });
   };
 
   const handleIpChange = (setter: (v: string) => void) => (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -54,7 +63,7 @@ function App() {
 
   const handleValidatedInput = (setter: (v: string) => void) => (e: React.ChangeEvent<HTMLInputElement>) => {
     const val = e.target.value;
-    const valid = val.replace(/[^a-zA-Zа-яА-Я0-9\-_]/g, '');
+    const valid = val.replace(/[^a-zA-Zа-яА-Я0-9\-_.\s]/g, '');
     setter(valid);
   };
 
@@ -75,7 +84,8 @@ function App() {
             {searchTerm && (
               <button
                 onClick={() => setSearchTerm('')}
-                style={{ position: 'absolute', right: '10px', top: '50%', transform: 'translateY(-50%)' }}
+                className="close-button"
+                style={{ position: 'absolute', right: '4px', top: '4px'  }}
               >✕</button>
             )}
           </div>
@@ -105,7 +115,7 @@ function App() {
                     <td className="td">{c.fio}</td>
                     <td className="td">{c.name}</td>
                     <td className="td">
-                      <button onClick={() => connect(c.ip)}>Подключиться</button>
+                      <button onClick={() => connect(c.name)} className="button">Подключиться</button>
                     </td>
                   </tr>
                 ))}
@@ -170,37 +180,54 @@ function App() {
 
         <div className="rightBlock">
           <h3>Быстрое подключение</h3>
-          <input
-            type="text"
-            placeholder="Имя или IP"
-            value={quickConnect}
-            onChange={handleValidatedInput(setQuickConnect)}
-            style={{ width: '60%', margin: '6px' }}
-          />
-          <button onClick={() => connect(quickConnect)} style={{ marginTop: '5px' }}>Подключиться</button>
-
-          <div style={{ marginTop: '15px' }}>
-            <label>IP: 10.114.</label>
+          <div className="input-wrapper" >
             <input
               type="text"
-              value={ipSegment1}
-              onChange={handleIpChange(setIpSegment1)}
-              maxLength={3}
-              style={{ width: '50px', margin: '0 5px' }}
+              placeholder="Имя или IP"
+              value={quickConnect}
+              onChange={handleValidatedInput(setQuickConnect)}
+              style={{ width: '60%', margin: '6px', paddingRight: '24px' }}
+              className="input"
             />
-            <span>.</span>
-            <input
-              type="text"
-              value={ipSegment2}
-              onChange={handleIpChange(setIpSegment2)}
-              maxLength={3}
-              style={{ width: '50px', margin: '0 5px' }}
-            />
-            <button
-              onClick={() => connect(`10.114.${ipSegment1}.${ipSegment2}`)}
-              style={{ marginLeft: '10px' }}
-              disabled={!ipSegment1 || !ipSegment2}
+            {quickConnect && (
+              <button
+                onClick={() => setQuickConnect('')}
+                className="close-button"
+              >✕</button>
+            )}
+            <button 
+              onClick={() => connect(quickConnect)} 
+              className="button" 
+              style={{ marginTop: '5px' }}
+              disabled={!quickConnect}
             >Подключиться</button>
+          </div>
+          
+          <div className="input-wrapper" >
+            <div style={{ marginTop: '15px' }}>
+              <label>IP: 10.114.</label>
+              <input
+                type="text"
+                value={ipSegment1}
+                onChange={handleIpChange(setIpSegment1)}
+                maxLength={3}
+                style={{ width: '50px', margin: '0 5px' }}
+              />
+              <span>.</span>
+              <input
+                type="text"
+                value={ipSegment2}
+                onChange={handleIpChange(setIpSegment2)}
+                maxLength={3}
+                style={{ width: '50px', margin: '0 5px' }}
+              />
+              <button
+                onClick={() => connect(`10.114.${ipSegment1}.${ipSegment2}`)}
+                className="button"
+                style={{ marginLeft: '10px' }}
+                disabled={!ipSegment1 || !ipSegment2}
+              >Подключиться</button>
+            </div>
           </div>
         </div>
 
