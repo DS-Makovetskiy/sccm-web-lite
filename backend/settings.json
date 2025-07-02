@@ -1,0 +1,9 @@
+{
+  "isDarkMode": false,
+  "dataSource": "csv",
+  "csvPath": "",
+  "ipPresets": [
+    "10.114.2.",
+    "10.114.9."
+  ]
+}

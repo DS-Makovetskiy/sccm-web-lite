@@ -1,18 +1,33 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import './App.css';
+import React from 'react';
+import TextField from '@mui/material/TextField';
+import IconButton from '@mui/material/IconButton';
+import KeyboardReturnIcon from '@mui/icons-material/KeyboardReturn';
+import Paper from '@mui/material/Paper';
+import InputBase from '@mui/material/InputBase';
+import Divider from '@mui/material/Divider';
+import ClearIcon from '@mui/icons-material/clear';
+import SettingsIcon from '@mui/icons-material/Settings';
+import DarkModeIcon from '@mui/icons-material/DarkMode';
+import LightModeIcon from '@mui/icons-material/LightMode'; // Импортируем иконку светлого режима
+
+
 
 function App() {
   const [computers, setComputers] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [loading, setLoading] = useState(false);
   const [quickConnect, setQuickConnect] = useState('');
-  const [ipSegment1, setIpSegment1] = useState('');
-  const [ipSegment2, setIpSegment2] = useState('');
-  const [darkMode, setDarkMode] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
   const [dataSource, setDataSource] = useState('csv');
   const [csvPath, setCsvPath] = useState('');
+  const [isDarkMode, setIsDarkMode] = useState(false); // Состояние для темы
+
+  const toggleTheme = () => {
+    setIsDarkMode(!isDarkMode);
+  };
 
   const fetchComputers = () => {
     setLoading(true);
@@ -49,6 +64,7 @@ function App() {
       console.error(`Ошибка при подключении к ${target}:`, err);
       alert(`Ошибка: ${err?.response?.data?.detail || 'не удалось подключиться'}`);
     });
+    setQuickConnect('');
   };
 
   const handleIpChange = (setter: (v: string) => void) => (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -68,7 +84,7 @@ function App() {
   };
 
   return (
-    <div className={`container ${darkMode ? 'dark' : ''}`}>
+    <div className={`container ${isDarkMode ? 'dark' : ''}`}>
       <div className="leftPane">
         <h1 className="header">Компьютеры филиала</h1>
 
@@ -84,8 +100,8 @@ function App() {
             {searchTerm && (
               <button
                 onClick={() => setSearchTerm('')}
-                className="close-button"
-                style={{ position: 'absolute', right: '4px', top: '4px'  }}
+                className="clear-button"
+                style={{ position: 'absolute', right: '4px', top: '4px', background: 'transparent', border: 'none'  }}
               >✕</button>
             )}
           </div>
@@ -93,9 +109,6 @@ function App() {
           <button onClick={fetchComputers} className="button">
             Обновить список
           </button>
-          <label className="themeToggle">
-            <input type="checkbox" checked={darkMode} onChange={() => setDarkMode(!darkMode)} /> Темная тема
-          </label>
           {loading && <span className="loading">Обновление...</span>}
         </div>
 
@@ -120,7 +133,7 @@ function App() {
                   </tr>
                 ))}
                 {filtered.length === 0 && (
-                  <tr><td colSpan="3" className="noResults">Ничего не найдено</td></tr>
+                  <tr><td colSpan={3} className="noResults">Ничего не найдено</td></tr>
                 )}
               </tbody>
             </table>
@@ -170,65 +183,129 @@ function App() {
 
       <div className="rightPane">
         <div className="rightBlock">
-          <button
-            title="Параметры"
-            onClick={() => setShowSettings(!showSettings)}
-            style={{ width: '36px', height: '36px', fontSize: '20px', borderRadius: '6px', cursor: 'pointer' }}>
-            ⚙
-          </button>
+          <div className='button-wrapper'>
+            <IconButton 
+              type="button"
+              onClick={() => setShowSettings(!showSettings)}
+              style={{ color: isDarkMode ? '#fff' : 'inherit' }}
+            >
+              <SettingsIcon />
+            </IconButton>
+            <IconButton 
+              type="button"
+              onClick={toggleTheme}
+              style={{ color: isDarkMode ? '#fff' : 'inherit' }}
+            >
+              {isDarkMode ? <LightModeIcon /> : <DarkModeIcon />}
+            </IconButton>
+          </div>
         </div>
 
         <div className="rightBlock">
           <h3>Быстрое подключение</h3>
+
           <div className="input-wrapper" >
-            <input
-              type="text"
-              placeholder="Имя или IP"
-              value={quickConnect}
-              onChange={handleValidatedInput(setQuickConnect)}
-              style={{ width: '60%', margin: '6px', paddingRight: '24px' }}
-              className="input"
-            />
-            {quickConnect && (
-              <button
+            <Paper
+              component="form"
+              sx={{ p: '2px 4px', display: 'flex', alignItems: 'center', width: 400 }}
+            >
+              <InputBase
+                sx={{ ml: 1, flex: 1 }}
+                placeholder="Имя или IP"
+                inputProps={{ 'aria-label': 'Имя или IP' }}
+                value={quickConnect}
+                onChange={handleValidatedInput(setQuickConnect)}
+                onKeyPress={(e) => { 
+                  if (e.key === 'Enter' && quickConnect) {
+                    connect(quickConnect);
+                  }
+                }}
+                autoComplete="off"
+              />
+              <IconButton 
+                type="button" 
+                sx={{ p: '10px' }} 
+                aria-label="search"
+                color='primary'
+                disabled={!quickConnect}
+                onClick={() => connect(quickConnect)}
+              >
+                <KeyboardReturnIcon />
+              </IconButton>
+              <Divider sx={{ height: 28, m: 0.5 }} orientation="vertical" />
+              <IconButton 
+                color="warning" 
+                sx={{ p: '10px' }} 
+                aria-label="clear"
+                disabled={!quickConnect}
                 onClick={() => setQuickConnect('')}
-                className="close-button"
-              >✕</button>
-            )}
-            <button 
-              onClick={() => connect(quickConnect)} 
-              className="button" 
-              style={{ marginTop: '5px' }}
-              disabled={!quickConnect}
-            >Подключиться</button>
+              >
+                <ClearIcon />
+              </IconButton>
+            </Paper>
           </div>
-          
-          <div className="input-wrapper" >
-            <div style={{ marginTop: '15px' }}>
-              <label>IP: 10.114.</label>
-              <input
-                type="text"
-                value={ipSegment1}
-                onChange={handleIpChange(setIpSegment1)}
-                maxLength={3}
-                style={{ width: '50px', margin: '0 5px' }}
-              />
-              <span>.</span>
-              <input
-                type="text"
-                value={ipSegment2}
-                onChange={handleIpChange(setIpSegment2)}
-                maxLength={3}
-                style={{ width: '50px', margin: '0 5px' }}
-              />
-              <button
-                onClick={() => connect(`10.114.${ipSegment1}.${ipSegment2}`)}
-                className="button"
-                style={{ marginLeft: '10px' }}
-                disabled={!ipSegment1 || !ipSegment2}
-              >Подключиться</button>
-            </div>
+
+          <div className="input-wrapper">
+            <table style={{ minWidth: '350px', maxWidth: '400', borderSpacing: '8px' }}>
+              <tbody>
+                {[
+                  { branch: '0114', baseIp: '10.114.2' },
+                  { branch: '0214', baseIp: '10.114.9' },
+                ].map(({ branch, baseIp }) => {
+                  const [segment, setSegment] = useState('');
+                  const handleConnect = () => {
+                    connect(`${baseIp}.${segment}`);
+                    setSegment('');
+                  };
+                  return (
+                    <tr key={branch}>
+                      <td style={{ verticalAlign: 'middle' }}>
+                        <strong>Отделение {branch}</strong>
+                      </td>
+                      <td>
+                        <label>IP: {baseIp}.</label>
+                        <TextField
+                          variant="standard"
+                          value={segment}
+                          onChange={handleIpChange(setSegment)}
+                          onKeyPress={(e) => {
+                            if (e.key === 'Enter' && segment) {
+                              handleConnect();
+                            }
+                          }}
+                          size="small"
+                          sx={{ 
+                            width: '3ch',
+                            '& .MuiInput-underline:before': {
+                              borderColor: isDarkMode ? '#888' : 'rgba(0, 0, 0, 0.42)',
+                            },
+                            '& .MuiInput-underline:hover:not(.Mui-disabled):before': {
+                              borderColor: isDarkMode ? '#fff' : 'rgba(0, 0, 0, 0.87)',
+                            }
+                          }}
+                          inputProps={{ 
+                            style: { color: isDarkMode ? '#fff' : 'inherit' }
+                          }}
+                          autoComplete="off"
+                        />
+                      </td>
+                      <td>
+                        <IconButton 
+                          aria-label="KeyboardReturn"
+                          disabled={!segment}
+                          onClick={handleConnect}
+                          style={{ color: isDarkMode ? '#fff' : 'inherit' }}
+                        >
+                          <KeyboardReturnIcon />
+                        </IconButton>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
           </div>
+
         </div>
 
         <div className="rightBlock"><h3>Таблица зарезервированных станций (будет с БД)</h3></div>
