@@ -62,6 +62,7 @@ body {
   gap: 20px;
   align-items: center;
   flex-wrap: wrap;
+  justify-content: space-between;
 }
 
 .input {
@@ -247,7 +248,7 @@ body {
 .rightBlock {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  /* gap: 20px; */
   height: 100%;
   background: #ffffff;
   border: 1px solid #ccc;
@@ -305,6 +306,20 @@ body {
 .button-wrapper {
   position: relative;
   display: flex;
+  flex-direction: row-reverse;
   gap: 10px;
   width: 100%;
+}
+
+.settings-preset-row {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-top: 10px;
+}
+
+.scrollableSettings {
+  max-height: calc(100vh - 200px); /* Adjust 100px as needed for desired padding from bottom */
+  overflow-y: auto;
+  padding-right: 15px; /* To prevent content from being hidden under the scrollbar */
 }
