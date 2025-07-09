@@ -1,9 +1,32 @@
 {
-  "isDarkMode": false,
-  "dataSource": "csv",
-  "csvPath": "",
-  "ipPresets": [
-    "10.114.2.",
-    "10.114.9."
-  ]
+    "cmrcviewer_path": "SCCM_Remote_Control/CmRcViewer.exe",
+    "presets": [
+        {
+            "name": "Отделение 0114",
+            "ip": "10.114.2."
+        },
+        {
+            "name": "Отделение 0214",
+            "ip": "10.114.9."
+        },
+        {
+            "name": "Отделение 0414",
+            "ip": "10.114.11."
+        }
+    ],
+    "dataSource": "csv",
+    "csvPath": "data/ad_pc.csv",
+    "psScriptPath": "",
+    "reservedComputers": [
+        {
+            "name": "PVL-Files01",
+            "target": "PVL-Files01"
+        },
+        {
+            "name": "Localhost",
+            "target": "127.0.0.1"
+        }
+    ],
+    "showReservedComputersBlock": true,
+    "theme": "system"
 }
