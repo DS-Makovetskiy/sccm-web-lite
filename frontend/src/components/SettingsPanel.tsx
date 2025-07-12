@@ -1,4 +1,3 @@
-// import React from 'react';
 import type { Settings, Preset, ReservedComputer } from '../types';
 import { api } from '../api';
 
@@ -31,7 +30,8 @@ import {
 
 interface SettingsPanelProps {
   settings: Settings;
-  onSettingsChange: (field: keyof Settings, value: any) => void;
+  // onSettingsChange: (field: keyof Settings, value: any) => void;
+  onSettingsChange: <K extends keyof Settings>(field: K, value: Settings[K]) => void;
   onSave: () => void;
   onSetAlert: (message: string, severity: 'success' | 'error') => void;
 }

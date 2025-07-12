@@ -11,6 +11,7 @@ const initialSettings: Settings = {
   showPresetsBlock: true,
   reservedComputers: [],
   showReservedComputersBlock: true,
+  theme: "system"
 };
 
 export function useSettings() {

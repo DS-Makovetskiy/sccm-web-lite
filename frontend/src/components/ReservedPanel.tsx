@@ -1,4 +1,3 @@
-// import React from 'react';
 import type { ReservedComputer } from '../types';
 import {
   Grid,
@@ -26,7 +25,7 @@ export function ReservedPanel({ computers, onConnect, onOpenFolder, onPing }: Re
       <div className="input-wrapper">
         <Grid container spacing={2} sx={{ justifyContent: 'center' }}>
           {computers.map((reserved, index) => (
-            <Grid item xs={12} sm={6} key={reserved.name + index}>
+            <Grid size={{ xs: 12, md: 5.7 }} key={reserved.name + index}>
               <ButtonGroup variant="contained" sx={{ width: '27ch' }}>
                 <Button
                   title={`Подключиться к ${reserved.target}`}

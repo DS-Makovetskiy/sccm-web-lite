@@ -12,6 +12,10 @@
         {
             "name": "Отделение 0414",
             "ip": "10.114.11."
+        },
+        {
+            "name": "",
+            "ip": ""
         }
     ],
     "dataSource": "csv",
@@ -25,8 +29,25 @@
         {
             "name": "Localhost",
             "target": "127.0.0.1"
+        },
+        {
+            "name": "",
+            "target": ""
+        },
+        {
+            "name": "",
+            "target": ""
+        },
+        {
+            "name": "",
+            "target": ""
+        },
+        {
+            "name": "",
+            "target": ""
         }
     ],
     "showReservedComputersBlock": true,
+    "showPresetsBlock": true,
     "theme": "system"
 }

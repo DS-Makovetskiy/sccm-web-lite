@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import type { Preset } from '../types';
 import {
   Divider,
@@ -21,7 +21,7 @@ interface PresetsPanelProps {
   onPing: (target: string) => void;
 }
 
-export function PresetsPanel({ presets, isDarkMode, onConnect, onOpenFolder, onPing }: PresetsPanelProps) {
+export function PresetsPanel({ presets, onConnect, onOpenFolder, onPing }: PresetsPanelProps) {
   const [segments, setSegments] = useState<string[]>([]);
 
   // Сбрасываем и инициализируем поля ввода, когда меняется список пресетов
@@ -71,7 +71,6 @@ export function PresetsPanel({ presets, isDarkMode, onConnect, onOpenFolder, onP
                       onKeyDown={(e) => { if (e.key === 'Enter') handleConnect(); }}
                       size="small"
                       sx={{ width: '4ch' }}
-                      inputProps={{ style: { color: isDarkMode ? '#fff' : 'inherit' } }}
                       autoComplete="off"
                     />
                   </td>

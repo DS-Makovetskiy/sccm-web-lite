@@ -19,10 +19,10 @@ export interface Settings {
   dataSource: 'csv' | 'ps' | 'direct-ad';
   csvPath: string;
   psScriptPath: string;
-  showPresetsBlock: boolean;
   reservedComputers: ReservedComputer[];
   showReservedComputersBlock: boolean;
-  theme: Theme;
+  showPresetsBlock: boolean;
+  theme: string;
 }
 
 export type AlertState = {

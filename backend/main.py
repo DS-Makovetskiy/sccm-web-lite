@@ -31,6 +31,7 @@ class Settings(BaseModel):
     psScriptPath: Optional[str] = ""
     reservedComputers: List[ReservedComputer]
     showReservedComputersBlock: bool
+    showPresetsBlock: bool
     theme: str
 
 
@@ -47,6 +48,7 @@ def load_settings() -> dict:
         "psScriptPath": "",
         "reservedComputers": [],
         "showReservedComputersBlock": True,
+        "showPresetsBlock": True,
         "theme": "system"
     }
     if not os.path.exists(SETTINGS_FILE):

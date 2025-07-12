@@ -1,6 +1,7 @@
 import React from 'react';
 import { 
   Paper, 
+  Button,
   Divider, 
   InputBase, 
   IconButton 
@@ -12,7 +13,6 @@ import {
   Terminal as TerminalIcon,
   KeyboardReturn as KeyboardReturnIcon
 } from '@mui/icons-material';
-import { LoadingButton } from '@mui/lab';
 
 interface ControlsProps {
   searchTerm: string;
@@ -56,15 +56,16 @@ export function Controls({
         </IconButton>
       </Paper>
 
-      <LoadingButton 
+      <Button 
         loading={loading} 
         loadingPosition="start" 
         startIcon={<RefreshIcon />} 
-        variant="standard" 
+        variant="text" 
+        color='inherit'
         onClick={onRefresh}
       >
         Обновить список
-      </LoadingButton>
+      </Button>
 
       <Paper component="form" sx={{ p: '2px 4px', display: 'flex', alignItems: 'center', width: 400 }}>
         <InputBase
