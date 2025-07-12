@@ -1,4 +1,5 @@
 import type { ReservedComputer } from '../types';
+
 import {
   Grid,
   Button,
@@ -10,7 +11,6 @@ import {
   Folder as FolderIcon,
   Terminal as TerminalIcon,
 } from '@mui/icons-material';
-
 interface ReservedPanelProps {
   computers: ReservedComputer[];
   onConnect: (target: string) => void;

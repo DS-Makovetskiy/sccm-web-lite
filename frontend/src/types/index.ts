@@ -22,7 +22,7 @@ export interface Settings {
   reservedComputers: ReservedComputer[];
   showReservedComputersBlock: boolean;
   showPresetsBlock: boolean;
-  theme: string;
+  theme: 'light' | 'dark' | 'system';
 }
 
 export type AlertState = {

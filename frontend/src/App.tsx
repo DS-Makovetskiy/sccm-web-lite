@@ -1,5 +1,6 @@
-// import React from 'react';
 import { useEffect, useState, useMemo } from 'react';
+import type { Settings } from './types/index';
+import { AxiosError } from 'axios';
 import './App.css';
 
 // API, Хуки и Компоненты
@@ -11,11 +12,6 @@ import { ComputerList } from './components/ComputerList';
 import { PresetsPanel } from './components/PresetsPanel';
 import { SettingsPanel } from './components/SettingsPanel';
 import { ReservedPanel } from './components/ReservedPanel';
-
-// Типы
-// import type { Settings } from './types';
-
-// Material-UI
 import { 
   Box, 
   Menu,
@@ -34,21 +30,13 @@ import {
   Tonality as SystemThemeIcon
 } from '@mui/icons-material';
 
-// Определяем возможные темы
-type Theme = 'light' | 'dark' | 'system';
-
 function App() {
   const { computers, loading, fetchComputers } = useComputers();
   const { settings, updateSettings, saveSettings } = useSettings();
-
   const [searchTerm, setSearchTerm] = useState('');
   const [quickConnect, setQuickConnect] = useState('');
   const [showSettings, setShowSettings] = useState(false);
-  // const [isDarkMode, setIsDarkMode] = useState(false);
   const [alert, setAlert] = useState<{ message: string; severity: 'success' | 'error' } | null>(null);
-
-  // --- Новое состояние для управления темой ---
-  // const [themeMode, setThemeMode] = useState<Theme>('system');
   const [menuAnchorEl, setMenuAnchorEl] = useState<null | HTMLElement>(null);
 
   // Определяем, является ли системная тема темной
@@ -56,7 +44,6 @@ function App() {
     window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches, 
   []);
 
-  // --- ИЗМЕНЕНО: isDarkMode теперь зависит от settings.theme ---
   const isDarkMode = useMemo(() => {
     const theme = settings.theme || 'system';
     if (theme === 'system') {
@@ -65,13 +52,9 @@ function App() {
     return theme === 'dark';
   }, [settings.theme, systemPrefersDark]);
 
-  // Отслеживаем изменения системной темы, чтобы обновить UI, если выбрана 'system'
   useEffect(() => {
     const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-    // Функция-обработчик
     const handleChange = () => {
-      // Чтобы компонент перерисовался, нужно изменить его состояние.
-      // Здесь мы просто "переустанавливаем" то же значение, чтобы спровоцировать re-render.
       if (settings.theme === 'system') {
         updateSettings('theme', 'system');
       }
@@ -93,32 +76,20 @@ function App() {
     }
   }, [alert]);
 
-  // // Отслеживаем изменения системной темы
-  // useEffect(() => {
-  //   const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-  //   const handleChange = () => {
-  //     if (themeMode === 'system') {
-  //       // Форсируем перерендер для обновления isDarkMode
-  //       setThemeMode('system'); 
-  //     }
-  //   };
-  //   mediaQuery.addEventListener('change', handleChange);
-  //   return () => mediaQuery.removeEventListener('change', handleChange);
-  // }, [themeMode]);
-
   const filteredComputers = useMemo(() =>
     computers.filter(c =>
       c.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       c.fio.toLowerCase().includes(searchTerm.toLowerCase())
     ), [computers, searchTerm]);
 
-  const handleApiAction = async (action: Promise<any>, successMessage?: string) => {
+  const handleApiAction = async <T,>(action: Promise<T>, successMessage?: string): Promise<void> => {
     try {
       await action;
       if (successMessage) console.log(successMessage);
-    } catch (err: any) {
-      console.error("Ошибка API:", err);
-      const detail = err?.response?.data?.detail || 'Неизвестная ошибка';
+    } catch (err) {
+      const axiosError = err as AxiosError<{ detail?: string }>;
+      console.error("Ошибка API:", axiosError);
+      const detail = axiosError?.response?.data?.detail || 'Неизвестная ошибка';
       setAlert({ message: `Ошибка: ${detail}`, severity: 'error' });
     }
   };
@@ -150,7 +121,6 @@ function App() {
     }
   };
 
-  // --- Функции для управления меню темы ---
   const handleThemeButtonClick = (event: React.MouseEvent<HTMLElement>) => {
     setMenuAnchorEl(event.currentTarget);
   };
@@ -159,20 +129,16 @@ function App() {
     setMenuAnchorEl(null);
   };
 
-  // --- ИЗМЕНЕНО: Функция теперь обновляет тему в общем объекте настроек ---
   const handleThemeChange = (newTheme: Settings['theme']) => {
     updateSettings('theme', newTheme);
     handleMenuClose();
   };
 
-  // --- ИЗМЕНЕНО: Иконка теперь зависит от settings.theme ---
   const ThemeIcon = {
     light: LightModeIcon,
     dark: DarkModeIcon,
     system: SystemThemeIcon,
   }[settings.theme || 'system'];
-
-  // const toggleTheme = () => setIsDarkMode(!isDarkMode);
 
   return (
     <div className={`container ${isDarkMode ? 'dark' : ''}`}>
@@ -260,47 +226,6 @@ function App() {
                 <ListItemText>Как в системе</ListItemText>
               </MenuItem>
             </Menu>
-
-            {/* --- Новая кнопка переключения темы с меню ---
-            <IconButton 
-              title='Выбрать тему'
-              onClick={handleThemeButtonClick}
-              style={{ color: isDarkMode ? '#fff' : 'inherit' }}
-            >
-              <ThemeIcon />
-            </IconButton>
-            <Menu
-              anchorEl={menuAnchorEl}
-              open={Boolean(menuAnchorEl)}
-              onClose={handleMenuClose}
-            >
-              <MenuItem onClick={() => handleThemeChange('light')}>
-                <ListItemIcon>
-                  <LightModeIcon fontSize="small" />
-                </ListItemIcon>
-                <ListItemText>Светлая</ListItemText>
-              </MenuItem>
-              <MenuItem onClick={() => handleThemeChange('dark')}>
-                <ListItemIcon>
-                  <DarkModeIcon fontSize="small" />
-                </ListItemIcon>
-                <ListItemText>Темная</ListItemText>
-              </MenuItem>
-              <MenuItem onClick={() => handleThemeChange('system')}>
-                <ListItemIcon>
-                  <SystemThemeIcon fontSize="small" />
-                </ListItemIcon>
-                <ListItemText>Как в системе</ListItemText>
-              </MenuItem>
-            </Menu> */}
-
-            {/* <IconButton 
-              title={ isDarkMode ? 'Светлая тема' : 'Темная тема' }
-              onClick={toggleTheme}
-              style={{ color: isDarkMode ? '#fff' : 'inherit' }}
-            >
-              {isDarkMode ? <LightModeIcon /> : <DarkModeIcon />}
-            </IconButton> */}
           </div>
         </div>
 

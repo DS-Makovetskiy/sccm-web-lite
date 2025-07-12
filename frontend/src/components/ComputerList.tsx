@@ -1,4 +1,3 @@
-// import React from 'react';
 import type { Computer } from '../types';
 
 interface ComputerListProps {

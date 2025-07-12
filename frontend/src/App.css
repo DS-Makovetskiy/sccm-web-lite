@@ -243,7 +243,6 @@ body {
 .rightBlock {
   display: flex;
   flex-direction: column;
-  /* gap: 20px; */
   height: 100%;
   background: #ffffff;
   border: 1px solid #ccc;
@@ -293,9 +292,6 @@ body {
 
 .container.dark .settingsPanel {
     background-color: #2c2c2c;
-}
-
-.input-wrapper {
 }
 
 .button-wrapper {

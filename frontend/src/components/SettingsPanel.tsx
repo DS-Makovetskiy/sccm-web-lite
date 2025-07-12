@@ -1,7 +1,6 @@
 import type { Settings, Preset, ReservedComputer } from '../types';
 import { api } from '../api';
 
-// Material-UI
 import {
   Box,
   Grid,
@@ -30,7 +29,6 @@ import {
 
 interface SettingsPanelProps {
   settings: Settings;
-  // onSettingsChange: (field: keyof Settings, value: any) => void;
   onSettingsChange: <K extends keyof Settings>(field: K, value: Settings[K]) => void;
   onSave: () => void;
   onSetAlert: (message: string, severity: 'success' | 'error') => void;
@@ -83,7 +81,7 @@ export function SettingsPanel({ settings, onSettingsChange, onSave, onSetAlert }
   };
 
   const handleThemeChange = (
-    event: React.MouseEvent<HTMLElement>,
+    _event: React.MouseEvent<HTMLElement>,
     newTheme: string | null,
   ) => {
     if (newTheme !== null) {
@@ -102,7 +100,7 @@ export function SettingsPanel({ settings, onSettingsChange, onSave, onSetAlert }
             alignItems: "flex-start",
           }}
         > 
-          <Grid item size={6}>
+          <Grid size={6}>
             <Box component="form" noValidate autoComplete="off" sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
               <FormLabel component="legend">Основные параметры</FormLabel>
               <Box sx={{ display: 'flex', alignItems: 'flex-end', gap: 1 }}>
@@ -143,14 +141,14 @@ export function SettingsPanel({ settings, onSettingsChange, onSave, onSetAlert }
             </Box>
           </Grid>
 
-          <Grid item size={6}>
+          <Grid size={6}>
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
               <FormControl component="fieldset">
                   <FormLabel component="legend">Источник данных</FormLabel>
                   <RadioGroup
                     row
                     value={settings.dataSource}
-                    onChange={(e) => onSettingsChange('dataSource', e.target.value)}
+                    onChange={(e) => onSettingsChange('dataSource', e.target.value as 'csv' | 'ps' | 'direct-ad')}
                   >
                     <FormControlLabel value="csv" control={<Radio />} label="CSV-файл" />
                     <FormControlLabel value="ps" control={<Radio />} label="PowerShell-скрипт" />
@@ -186,7 +184,7 @@ export function SettingsPanel({ settings, onSettingsChange, onSave, onSetAlert }
             </Box>
           </Grid>
 
-          <Grid item size={6}>
+          <Grid size={6}>
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
               <FormGroup>
                 <FormControlLabel 
@@ -227,7 +225,7 @@ export function SettingsPanel({ settings, onSettingsChange, onSave, onSetAlert }
             </Box>
           </Grid>
 
-          <Grid item size={6}>
+          <Grid size={6}>
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
               <FormGroup>
                 <FormControlLabel 
@@ -245,7 +243,7 @@ export function SettingsPanel({ settings, onSettingsChange, onSave, onSetAlert }
                 <FormLabel component="legend">Зарезервированные компьютеры</FormLabel>
                 <Grid container spacing={2}>
                   {settings.reservedComputers.map((reserved, index) => (
-                    <Grid item key={index}>
+                    <Grid key={index}>
                        <Box className="settings-preset-row" sx={{ display: 'flex', flexDirection: 'row', gap: 1, width: '30ch'}}>
                           <TextField label="Название" variant="standard" fullWidth value={reserved.name} onChange={(e) => handleReservedChange(index, 'name', e.target.value)} disabled={!settings.showReservedComputersBlock} />
                           <TextField label="Имя или IP" variant="standard" fullWidth value={reserved.target} onChange={(e) => handleReservedChange(index, 'target', e.target.value)} disabled={!settings.showReservedComputersBlock} />

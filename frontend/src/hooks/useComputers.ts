@@ -14,7 +14,7 @@ export function useComputers() {
       setComputers(response.data);
     } catch (error) {
       console.error("Ошибка при загрузке списка компьютеров:", error);
-      setComputers([]); // Очищаем список при ошибке
+      setComputers([]);
     } finally {
       setLoading(false);
     }

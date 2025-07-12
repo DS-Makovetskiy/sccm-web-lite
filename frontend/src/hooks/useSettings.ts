@@ -42,7 +42,7 @@ export function useSettings() {
     await fetchSettings(); // Перезагружаем настройки после сохранения
   };
 
-  const updateSettings = (field: keyof Settings, value: any) => {
+  const updateSettings = <K extends keyof Settings>(field: K, value: Settings[K]) => {
     setSettings(prev => ({ ...prev, [field]: value }));
   };
   

@@ -12,15 +12,11 @@
         {
             "name": "Отделение 0414",
             "ip": "10.114.11."
-        },
-        {
-            "name": "",
-            "ip": ""
         }
     ],
     "dataSource": "csv",
     "csvPath": "data/ad_pc.csv",
-    "psScriptPath": "",
+    "psScriptPath": "C:/dev/sccm-web/backend/Get_AD_Data.ps1",
     "reservedComputers": [
         {
             "name": "PVL-Files01",
